@@ -1,0 +1,239 @@
+<div class="container">
+    <div if="{{ page == 0 }}" class="container">
+        <div if="{{ status == 0 || status == 2 }}"
+             style="width: {{ PUZZLE_SIZE }}px;
+                     height: {{ PUZZLE_SIZE }}px;">
+            <div if="{{ calc_areLiteBuffs() }}" class="puzzle">
+                <div for="{{ PUZZLE_TEMPLATE }}" class="piece"
+                     @click="move($idx)">
+                    <text class="piece-text"
+                          show="{{ this['puzzle_' + $idx] }}">
+                        {{ this['puzzle_' + $idx] }}
+                    </text>
+                </div>
+            </div>
+            <div else class="puzzle"
+                 style="width: {{ PUZZLE_SIZE }}px;
+                         height: {{ PUZZLE_SIZE }}px;">
+                <div for="{{ PUZZLE_TEMPLATE }}" class="piece"
+                     style="padding: {{ calc_piecePadding($idx) }}px;"
+                     @click="move($idx)">
+                    <text class="piece-text"
+                          show="{{ this['puzzle_' + $idx] }}">
+                        {{ calc_pieceText($idx) || 0 }}
+                    </text>
+                </div>
+            </div>
+        </div>
+        <div if="{{ status == 1 }}" class="checkbox-group">
+            <text style="font-size: 38px; margin: 20px;">
+                Buff 选择
+            </text>
+            <list class="list" style="height: 70%;">
+                <list-item for="{{ BUFFS }}" class="checkbox-item">
+                    <text class="checkbox-item-input"
+                          style="border-color:
+                                      {{ calc_checkboxsBg(calc_buffsChecked($item)) }};
+                                  background-color:
+                                      {{ calc_checkboxsBg2(calc_buffsChecked($item)) }};"
+                          @click="checkBuff($item)">
+                    </text>
+                    <text class="checkbox-item-label"
+                          style="color:
+                                      {{ calc_checkboxsBg(calc_buffsChecked($item)) }};"
+                          @click="checkBuff($item)">
+                        {{ $item }}
+                    </text>
+                </list-item>
+            </list>
+        </div>
+        <div if="{{ status <= 2 }}" class="button-group">
+            <input if="{{ status != 1 }}" type="button"
+                   value="{{ calc_startLabel() }}"
+                   class="button-item" @click="start"
+                   @longpress="changeStartMode"></input>
+            <input if="{{ status != 2 }}" type="button"
+                   value="{{ status == 1 ? '关闭' : '选 Buff' }}"
+                   class="button-item"
+                   @click="gotoStatus(1 - status)"></input>
+        </div>
+        <swiper if="{{ status == 0 }}" class="button-group"
+                loop="false">
+            <div class="button-group">
+                <input type="button"
+                       value="历史" class="button-item"
+                       style="border-color: deepskyblue;"
+                       @click="gotoPage(1)"></input>
+                <input type="button"
+                       value="我的" class="button-item"
+                       style="border-color: deepskyblue;"
+                       @click="gotoPage(3)"></input>
+            </div>
+            <div class="button-group">
+                <input type="button"
+                       value="关于" class="button-item"
+                       style="border-color: deepskyblue;"
+                       @click="gotoPage(2)"></input>
+            </div>
+        </swiper>
+        <input if="{{ status == 2 && buff_unsolvable }}"
+               type="button" value="小心无解！"
+               class="button"
+               style="width: 60%; color: red; border-color: red;"></input>
+        <stack if="{{ status == 3 }}" class="container">
+            <image show="{{ buff_idao }}"
+                   src="/common/idao.jpg"
+                   style="width: 100%; height: 100%;">
+            </image>
+            <div class="banner-container"
+                 style="height: 60%;">
+                <text class="banner" style="font-size: 38px;">
+                    {{ calc_congratulation() }}
+                </text>
+                <text class="banner" style="font-size: 38px;">
+                    {{ calc_timer() }}
+                </text>
+                <text class="banner" style="margin-top: 10%;">
+                    步数：{{ steps }}
+                </text>
+                <text class="banner">
+                    TPS：{{ calc_TPS() }}
+                </text>
+            </div>
+            <input type="button"
+                   value="返回" class="button"
+                   style="border-color: white; margin-top: 75%; left: 24%;"
+                   @click="gotoStatus(0)"></input>
+        </stack>
+    </div>
+
+    <div if="{{ page == 1 }}" class="container">
+        <input type="button" value="返回" class="button"
+               style="border-color: lightgreen;"
+               @click="gotoPage(0)"></input>
+        <text for="{{ calc_PB() }}" class="banner"
+              style="height: 10%; font-size: 38px; color: lightgreen;"
+              @click="gotoRecord($item.i)"
+              @longpress="clearRecords">
+            PB：{{ calc_timer($item.v.record) }}
+        </text>
+        <div show="{{ recordsLength }}" class="banner0-container"
+             style="height: 60fp; border-color: {{ calc_pagerBg() }};"
+             @longpress="gotoPagerOrder(1 - recordsOrder)">
+            <div class="banner1">
+                <text class="banner1-item" style="width: 33.3%;"
+                      @click="gotoRecordsPage(- 1)">
+                    {{ '<' }}
+                </text>
+                <text class="banner1-item" style="width: 33.3%;">
+                    {{ recordsPageId + 1 }}/{{ recordsPages }}
+                </text>
+                <text class="banner1-item" style="width: 33.3%;"
+                      @click="gotoRecordsPage(1)">
+                    {{ '>' }}
+                </text>
+            </div>
+        </div>
+        <list show="{{ recordsLength }}" class="list"
+              ref="recordsList" style="margin-top: 1%;">
+            <list-item for="{{ recordsCurrent }}" tid="i"
+                       class="banner0-container"
+                       style="height: 180fp;"
+                       @click="deleteRecord($item.i)">
+                <div class="banner1">
+                    <text class="banner1-item" style="font-size: 38px;">
+                        {{ calc_timer($item.record) }}
+                    </text>
+                    <text class="banner1-item"
+                          style="color: lightgray;">
+                        {{ $item.steps }}步
+                    </text>
+                </div>
+                <marquee class="banner0"
+                         style="color: gray; height: 42fp;"
+                         scrollamount="10">
+                    {{ ($item.steps / $item.record).toFixed(2) }} TPS{{ calc_buffsLabel($item.buffs) }}
+                </marquee>
+                <text class="banner0"
+                      style="color:
+                                  {{ $item.delete_confirms ? 0xFF0000 : 0x808080 }};">
+                    {{ $item.delete_confirms || TIME_FORMAT($item.time) }}
+                </text>
+            </list-item>
+        </list>
+    </div>
+
+    <div if="{{ page == 2 }}" class="container">
+        <input type="button" value="返回" class="button"
+               style="border-color: lightgreen;"
+               @click="gotoPage(0)"></input>
+        <text class="banner"
+              style="height: 10%; font-size: 38px; margin-top: 2%;">
+            关于
+        </text>
+        <list class="list" style="margin-top: 2%; height: 70%;">
+            <list-item class="banner-container" style="height: 300fp;">
+                <text class="banner"
+                      style="text-align: left; padding: 20px;">
+                    Copyright (c) 2020 - {{ YEAR }}
+                </text>
+                <text class="banner"
+                      style="text-align: left; padding: 20px;">
+                    九尾狐工作室 jwhgzs.com 谭镇洋
+                </text>
+            </list-item>
+        </list>
+    </div>
+
+    <div if="{{ page == 3 }}" class="container">
+        <input type="button" value="返回" class="button"
+               style="border-color: lightgreen;"
+               @click="gotoPage(0)"></input>
+        <text class="banner"
+              style="height: 10%; font-size: 38px; margin-top: 2%;">
+            我的
+        </text>
+        <list class="list" style="margin-top: 2%; height: 70%;">
+            <list-item class="banner-container"
+                       style="margin-top: 5%; height: 60fp;">
+                <text class="banner"
+                      style="padding: 20px;">
+                    账号切换
+                </text>
+            </list-item>
+            <list-item style="height: 60fp;">
+                <swiper class="container" loop="false" index="{{ uid }}">
+                    <div for="{{ UIDS }}" class="checkbox-item">
+                        <text class="checkbox-item-input"
+                              style="border-color:
+                                          {{ calc_checkboxsBg(calc_uidsChecked($idx)) }};
+                                      background-color:
+                                          {{ calc_checkboxsBg2(calc_uidsChecked($idx)) }};"
+                              @click="checkUid($idx)">
+                        </text>
+                        <text class="checkbox-item-label"
+                              style="color:
+                                          {{ calc_checkboxsBg(calc_uidsChecked($idx)) }};"
+                              @click="checkUid($idx)">
+                            {{ $item }}
+                        </text>
+                    </div>
+                </swiper>
+            </list-item>
+            <list-item class="banner-container"
+                       style="margin-top: 5%; height: 60fp;">
+                <text class="banner"
+                      style="padding: 20px;">
+                    历史纪录
+                </text>
+            </list-item>
+            <list-item class="banner-container" style="height: 60fp;">
+                <input type="button" class="button"
+                       style="width: 95%; border-color: lightgreen;"
+                       @click="clearRecords">
+                    清空当前 {{ clearRecordsConfirms }}/{{ RECORDS_CLEAR_CONFIRM_TIMES }}
+                </input>
+            </list-item>
+        </list>
+    </div>
+</div>

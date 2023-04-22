@@ -1,0 +1,121 @@
+.container {
+    align-items: center;
+    flex-direction: column;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.puzzle {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background-color: midnightblue;
+}
+.piece {
+    width: 22.5%;
+    height: 22.5%;
+    margin-left: 2%;
+    margin-top: 2%;
+}
+.piece-text {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 38px;
+    background-color: deepskyblue;
+    color: white;
+}
+
+.banner-container {
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+.banner {
+    width: 100%;
+    text-align: center;
+}
+.banner0-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-top: 10px;
+    width: 96%;
+    border-width: 2px;
+    border-color: lightgreen;
+    border-radius: 12px;
+}
+.banner0 {
+    width: 90%;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.banner1 {
+    justify-content: space-around;
+    width: 90%;
+    height: 50fp;
+}
+.banner1-item {
+    height: 100%;
+    text-align: center;
+}
+
+.button {
+    margin: 2%;
+    width: 50%;
+    height: 55fp;
+    background-color: none;
+    border-width: 2px;
+    border-color: deepskyblue;
+    border-radius: 12px;
+}
+.button-group {
+    justify-content: space-around;
+    margin-top: 2%;
+    width: 100%;
+    height: 55fp;
+}
+.button-item {
+    width: 47%;
+    height: 100%;
+    background-color: none;
+    border-width: 2px;
+    border-color: lightgreen;
+    border-radius: 12px;
+}
+.checkbox-group {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3%;
+    width: 100%;
+    height: 75%;
+}
+.checkbox-item {
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 60fp;
+}
+.checkbox-item-input {
+    width: 40fp;
+    height: 40fp;
+    border-width: 2px;
+    border-radius: 20fp;
+}
+.checkbox-item-label {
+    width: 50%;
+    height: 100%;
+}
+
+.list {
+    width: 100%;
+    height: 58%;
+    padding-bottom: 20px;
+}

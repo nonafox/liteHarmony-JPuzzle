@@ -1,0 +1,35 @@
+apply plugin: 'com.huawei.ohos.hap'
+apply plugin: 'com.huawei.ohos.decctest'
+//For instructions on signature configuration, see https://developer.harmonyos.com/cn/docs/documentation/doc-guides-V3/ide_debug_device-0000001053822404-V3#section1112183053510
+ohos {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\JWH洋\\Desktop\\签名\\2023.p12')
+            storePassword '00000020888D74EAF99F0E7C72FDCF34C0BFEF874F902633823B43B2DD2D16FA897EB9FA7911D2DF25B6FB1CE603ACA8'
+            keyAlias = 'jwhgzs'
+            keyPassword '0000002028350C7A73907DA8C25F2ED68D787D5863D9CEDB366713E9D9CCE8704D8ECFE351A2218F0706AC0772D956E9'
+            signAlg = 'SHA256withECDSA'
+            profile file('C:\\Users\\JWH洋\\Desktop\\签名\\jpuzzleDebug.p7b')
+            certpath file('C:\\Users\\JWH洋\\Desktop\\签名\\2023debug.cer')
+        }
+    }
+    compileSdkVersion 7
+    defaultConfig {
+        compatibleSdkVersion 7
+    }
+    buildTypes {
+        release {
+            proguardOpt {
+                proguardEnabled false
+                rulesFiles 'proguard-rules.pro'
+            }
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.1'
+}
+decc {
+    supportType = ['html', 'xml']
+}
